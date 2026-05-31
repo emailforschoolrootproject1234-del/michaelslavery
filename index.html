@@ -17,20 +17,10 @@
       padding: 60px 20px;
       background: rgba(0,0,0,0.5);
     }
-    h1 {
-      font-size: 3.2em;
-      margin: 10px 0;
-    }
-    .subtitle {
-      font-size: 1.6em;
-      margin-top: 10px;
-      color: #ffff00;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+    h1 { font-size: 3.2em; margin: 10px 0; }
+    .subtitle { font-size: 1.6em; margin-top: 10px; color: #ffff00; }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
     .section {
       background: rgba(255,255,255,0.12);
       margin: 30px auto;
@@ -45,35 +35,66 @@
       border-radius: 12px;
       font-size: 1.35em;
       text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       max-width: 800px;
       margin-left: auto;
       margin-right: auto;
     }
-    .price {
-      color: #ffff00;
-      font-weight: bold;
-      float: right;
-    }
+    .price { color: #ffff00; font-weight: bold; }
+
     button {
       background: #ffff00;
       color: #000;
       border: none;
-      padding: 18px 40px;
-      font-size: 1.5em;
-      margin: 20px 10px;
+      padding: 12px 25px;
+      font-size: 1.1em;
+      margin: 5px;
       border-radius: 50px;
       cursor: pointer;
       font-weight: bold;
     }
-    button:hover {
-      background: #ffcc00;
-      transform: scale(1.08);
+    button:hover { background: #ffcc00; transform: scale(1.05); }
+
+    /* Cart */
+    #cart-sidebar {
+      position: fixed;
+      top: 0; right: -400px;
+      width: 400px;
+      height: 100%;
+      background: #111;
+      transition: 0.4s;
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 1000;
     }
-    .footer {
-      padding: 40px;
-      font-size: 1.3em;
-      background: rgba(0,0,0,0.5);
-      margin-top: 40px;
+    #cart-sidebar.open { right: 0; }
+
+    .cart-item {
+      background: #222;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+
+    /* Checkout Modal */
+    #checkout-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #222;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 15px;
+      border: 3px solid #ff0;
     }
   </style>
 </head>
@@ -86,48 +107,122 @@
 
   <div class="container">
 
-    <div class="section">
-      <h2>ABOUT MICHAEL SLAVERY INC</h2>
-      <p style="font-size:1.5em;">We are the world's leading supplier of <strong>live and dead people</strong> in premium quality with professional gift wrapping and fast delivery.</p>
-    </div>
+    <button onclick="toggleCart()" style="position:fixed; top:20px; right:20px; z-index:999;">
+      🛒 Cart (<span id="cart-count">0</span>)
+    </button>
 
     <div class="section">
-      <h2>Our Products (10 Items)</h2>
-      <div class="product">1. Male - Manual Labor Worker (Live) <span class="price">$2000</span></div>
-      <div class="product">2. Female - High-Tech Specialist (Live) <span class="price">$2000</span></div>
-      <div class="product">3. Male - Computer / IT Specialist (Live) <span class="price">$500</span></div>
-      <div class="product">4. Female - Manual Labor Worker (Live) <span class="price">$500</span></div>
-      <div class="product">5. Male - Management Package (Gift Wrapped) <span class="price">$2100</span></div>
-      <div class="product">6. Female - Psychologist Package (Gift Wrapped) <span class="price">$2100</span></div>
-      <div class="product">7. Male - Psychologist Package (Gift Wrapped) <span class="price">$600</span></div>
-      <div class="product">8. Female - Management Package (Gift Wrapped) <span class="price">$600</span></div>
-      <div class="product">9. Custom Person - Perfectly Tailored To Your Needs <span class="price">$5000</span></div>
-      <div class="product">10. Female - Optimized For Work Needs <span class="price">$300</span></div>
+      <h2>Our Products</h2>
+      <div class="product">1. Male - Manual Labor Worker (Live) <span class="price">$2000</span> <button onclick="addToCart(1, 'Male Manual Labor', 2000)">Add to Cart</button></div>
+      <div class="product">2. Female - High-Tech Specialist (Live) <span class="price">$2000</span> <button onclick="addToCart(2, 'Female High-Tech', 2000)">Add to Cart</button></div>
+      <div class="product">3. Male - IT Specialist (Live) <span class="price">$500</span> <button onclick="addToCart(3, 'Male IT Specialist', 500)">Add to Cart</button></div>
+      <div class="product">4. Female - Manual Labor (Live) <span class="price">$500</span> <button onclick="addToCart(4, 'Female Manual Labor', 500)">Add to Cart</button></div>
+      <div class="product">5. Male - Management (Gift Wrapped) <span class="price">$2100</span> <button onclick="addToCart(5, 'Male Management Package', 2100)">Add to Cart</button></div>
+      <div class="product">9. Custom Person - Perfectly Tailored <span class="price">$5000</span> <button onclick="addToCart(9, 'Custom Person', 5000)">Add to Cart</button></div>
     </div>
 
-    <div class="section">
-      <h2>🔥 LIMITED TIME OFFERS 🔥</h2>
-      <div class="product">Psychologist + Manager Combo <span class="price">$3500</span></div>
-      <div class="product">High-Tech Girl + Manual Labor <span class="price">$800</span></div>
-      <div class="product">Custom Woman + Custom Man <span class="price">$3900</span></div>
-      <div class="product">High-Tech Specialist + Male Manager <span class="price">$1000</span></div>
-    </div>
-
-    <button onclick="buyNow()">BUY A WORKER NOW!</button>
-    <button onclick="addToCart()">ADD TO CART</button>
+    <button onclick="toggleCart()" style="font-size:1.4em; padding:15px 40px;">🛒 View Cart & Checkout</button>
 
   </div>
 
-  <div class="footer">
-    <p><strong>All companies should buy their workers from Michael Slavery INC.</strong><br>Thank you for choosing us!</p>
+  <!-- Cart Sidebar -->
+  <div id="cart-sidebar">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <h3>Total: $<span id="cart-total">0</span></h3>
+    <button onclick="checkout()" style="width:100%; padding:15px;">Proceed to Checkout</button>
+    <button onclick="toggleCart()" style="width:100%; background:#666;">Close Cart</button>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal">
+    <div class="modal-content">
+      <h2>Checkout - Michael Slavery INC</h2>
+      <p><strong>Shipping to:</strong> Your Location, Earth</p>
+      
+      <h3>Order Summary</h3>
+      <div id="checkout-items"></div>
+      <h3>Total: $<span id="checkout-total">0</span></h3>
+
+      <h3>Payment Details (Fake)</h3>
+      <input type="text" placeholder="Card Number" value="4242 4242 4242 4242" style="width:100%; padding:10px; margin:8px 0;"><br>
+      <input type="text" placeholder="Name on Card" value="Michael Slavery" style="width:100%; padding:10px; margin:8px 0;"><br>
+      <input type="text" placeholder="Expiry Date" value="12/28" style="width:48%; padding:10px; margin:8px 0;">
+      <input type="text" placeholder="CVV" value="666" style="width:48%; padding:10px; margin:8px 0;">
+
+      <br><br>
+      <button onclick="completePurchase()" style="background:#0f0; width:100%; padding:18px; font-size:1.3em;">COMPLETE PURCHASE - $ <span id="final-total">0</span></button>
+      <button onclick="closeCheckout()" style="background:#666; width:100%; margin-top:10px;">Cancel</button>
+    </div>
   </div>
 
   <script>
-    function buyNow() {
-      alert("🎉 Order Confirmed!\n\nThank you for shopping at Michael Slavery INC.\nYour worker will be delivered soon... 😈");
+    let cart = [];
+
+    function addToCart(id, name, price) {
+      cart.push({id, name, price});
+      updateCart();
+      alert(`${name} added to cart! 🛒`);
     }
-    function addToCart() {
-      alert("✅ Added to cart!\nOur team will contact you shortly.");
+
+    function updateCart() {
+      const itemsDiv = document.getElementById('cart-items');
+      itemsDiv.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price;
+        itemsDiv.innerHTML += `
+          <div class="cart-item">
+            ${item.name} - $${item.price}
+            <button onclick="removeFromCart(${index})" style="float:right; background:#c00;">Remove</button>
+          </div>`;
+      });
+
+      document.getElementById('cart-total').textContent = total;
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    function toggleCart() {
+      const sidebar = document.getElementById('cart-sidebar');
+      sidebar.classList.toggle('open');
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+      toggleCart();
+      
+      const checkoutItems = document.getElementById('checkout-items');
+      checkoutItems.innerHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        total += item.price;
+        checkoutItems.innerHTML += `<p>${item.name} - $${item.price}</p>`;
+      });
+
+      document.getElementById('checkout-total').textContent = total;
+      document.getElementById('final-total').textContent = total;
+      document.getElementById('checkout-modal').style.display = 'block';
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkout-modal').style.display = 'none';
+    }
+
+    function completePurchase() {
+      alert("🎉 PURCHASE SUCCESSFUL!\n\nThank you for buying from Michael Slavery INC.\nYour human(s) will be delivered within 3-5 business days.\n\n(Just kidding... or am I? 😈)");
+      cart = [];
+      closeCheckout();
+      updateCart();
     }
   </script>
 
